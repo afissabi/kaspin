@@ -1,0 +1,16 @@
+.card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    flex-wrap: wrap;
+    min-height: 70px;
+    padding: 0 2.25rem;
+    background-color: #192c38;
+    border-bottom: 1px solid #eff2f5;
+}
+.aside-menu .menu-item.here>.menu-link,
+.aside-menu .menu-item.show>.menu-link {
+    transition: color .2s ease, background-color .2s ease;
+    background-color: #815555;
+    color: #fff;
+}
