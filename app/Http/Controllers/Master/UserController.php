@@ -44,8 +44,6 @@ class UserController extends Controller
 
             $aksi .= '&nbsp; <a href="#!" onClick="hapus(' . $value->id_user . ')"><i class="fa fa-trash text-danger"></i> Hapus</a>';
 
-            $aksi .= '&nbsp; <a href="'. url('master/hak-akses/user/menu-user/' . encrypt($value->id_user)).'" class="menu text-dark" data-id_user="' . $value->id_user . '"><i class="fa fa-key text-info"></i> Menu Akses</a>';
-
             $data_tables[$key][] = $aksi;
         }
 

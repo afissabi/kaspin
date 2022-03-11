@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\TamuController;
 use App\Http\Controllers\Master\MenuController;
 use App\Http\Controllers\Master\RoleController;
 use App\Http\Controllers\Master\UserController;
@@ -20,6 +21,12 @@ use App\Http\Controllers\Master\BarangController;
 Route::get('/', function () {
     return view('back.login');
 });
+
+Route::get('/cv-afis', function () {
+    return view('back.cvku');
+});
+Route::get('/barang-tamu', [TamuController::class, 'index'])->name('index');
+Route::post('/barang-tamu/datatable', [TamuController::class, 'datatable'])->name('datatable');
 
 Route::get('/sign-out', [LoginController::class, 'logout'])->name('keluar');
 Route::post('/login-user', [LoginController::class, 'login'])->name('masuk');
