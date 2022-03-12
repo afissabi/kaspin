@@ -306,6 +306,41 @@ class BarangController extends Controller
         }
     }
 
+    public function logbarang()
+    {
+        return view('back.barang.log');
+    }
+
+    public function logdata()
+    {
+        $datas = t_barang::OrderBy('tanggal', 'DESC')->get();
+        $user = session('user')->jabatan;
+
+        $data_tables = [];
+        foreach ($datas as $key => $value) {
+            $data_tables[$key][] = $key + 1;
+            $data_tables[$key][] = \Carbon\Carbon::parse($value->tanggal)->format('d-m-Y');
+            if ($value->status_transaksi == 1) {
+                $data_tables[$key][] = '<center><span class="badge badge-success">Barang Masuk</span></center>';
+            } else {
+                $data_tables[$key][] = '<center><span class="badge badge-danger">Barang Keluar</span></center>';
+            }
+            $data_tables[$key][] = $value->barang->kd_barang;
+            $data_tables[$key][] = $value->barang->nama_barang;
+            $data_tables[$key][] = $value->barang->satuan_barang;
+            $data_tables[$key][] = $value->jumlah_sebelum;
+            $data_tables[$key][] = $value->jumlah;
+            $data_tables[$key][] = $value->catatan;
+        }
+
+        $data = [
+            "data" => $data_tables
+        ];
+
+        // dd($datas);
+        return response()->json($data);
+    }
+
     public function keluar()
     {
         $barang = M_barang::all();

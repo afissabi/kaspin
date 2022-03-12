@@ -35,7 +35,7 @@ Route::group(['middleware' => 'user'], function () {
     Route::get('/dashboard', function () {
         return view('back.welcome.welcome');
     });
-    Route::get('/kamarhaji', [MenuController::class, 'kamarhaji'])->name('kamarhaji');
+    
     Route::group([
         'prefix' => 'master',
         'as' => 'master.',
@@ -101,6 +101,9 @@ Route::group(['middleware' => 'user'], function () {
         'prefix' => 'transaksi',
         'as' => 'transaksi.',
     ], function () {
+        
+        Route::get('/log-barang', [BarangController::class, 'logbarang'])->name('logbarang');
+        Route::post('/log-barang/data', [BarangController::class, 'logdata'])->name('logdata');
 
         Route::group([
             'prefix' => 'stok-barang',

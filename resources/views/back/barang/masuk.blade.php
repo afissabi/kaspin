@@ -45,16 +45,17 @@
             </div>
             <div class="modal-body">
                 <form method="post" class="kt-form kt-form--label-right" id="form">
+                    <input type="hidden" value="1" class="form-control" id="statustambah">
                     <div class="row mb-10">
                         <label class="col-lg-3 col-form-label text-lg-end required">Tanggal Transaksi :</label>
                         <div class="col-lg-8 col-xl-8">
-                            <input type="date" class="form-control" name="tanggal" placeholder="Tanggal Transaksi">
+                            <input type="date" class="form-control" name="tanggal" id="tanggaltambah" placeholder="Tanggal Transaksi">
                         </div>
                     </div>
                     <div class="row mb-10">
                         <label class="col-lg-3 col-form-label text-lg-end required">Nama Barang :</label>
                         <div class="col-lg-8">
-                            <select class="form-select" data-control="select2" name="barang" data-placeholder="Pilih Barang">
+                            <select class="form-select" data-control="select2" name="barang" id="barangtambah" data-placeholder="Pilih Barang">
                                 <option></option>
                                 @foreach ($barang as $item)
                                     <option value="{{ $item->id_barang }}">{{ $item->kd_barang }} | {{ $item->nama_barang }}</option>    
@@ -65,19 +66,19 @@
                     <div class="row mb-10">
                         <label class="col-lg-3 col-form-label text-lg-end required">Jumlah Barang :</label>
                         <div class="col-lg-8 col-xl-8">
-                            <input type="number" min="0" class="form-control" name="jumlah" placeholder="Jumlah Barang">
+                            <input type="number" min="0" class="form-control" name="jumlah" id="jumlahtambah" placeholder="Jumlah Barang">
                         </div>
                     </div>
                     <div class="row mb-10">
                         <label class="col-lg-3 col-form-label text-lg-end">Catatan Transaksi :</label>
                         <div class="col-lg-8 col-xl-8">
-                            <textarea class="form-control" name="catatan" rows="4"></textarea>
+                            <textarea class="form-control" name="catatan" id="catatantambah" rows="4"></textarea>
                         </div>
                     </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" data-bs-dismiss="modal"><i class="fas fa-times-circle"></i> Close</button>
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
+                <button type="submit" class="btn btn-primary" id="simpanMasuk"><i class="fas fa-save"></i> Simpan</button>
                 </form>
             </div>
         </div>
@@ -137,105 +138,42 @@
 @endsection
 
 @section('custom_js')
-<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script>
-<script type="text/javascript">
+{{-- <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
     // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
-        apiKey: "{{ config('services.firebase.api_key') }}",
-        authDomain: "{{ config('services.firebase.auth_domain') }}",
-        databaseURL: "{{ config('services.firebase.database_url') }}",
-        projectId: "{{ config('services.firebase.project_id') }}",
-        storageBucket: "{{ config('services.firebase.storage_bucket') }}",
-        messagingSenderId: "{{ config('services.firebase.messaging_sender_id') }}",
-        appId: "{{ config('services.firebase.app_id') }}"
+      apiKey: "AIzaSyAw3lxuhwI4-lTva3wRvofNsiQ58FFe91M",
+      authDomain: "kaspintes.firebaseapp.com",
+      projectId: "kaspintes",
+      storageBucket: "kaspintes.appspot.com",
+      messagingSenderId: "146915827857",
+      appId: "1:146915827857:web:5e74e382635708985ddf30",
+      measurementId: "G-05Z0F1573F"
     };
-
+  
     // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
 
-    var database = firebase.database();
+    $("#simpanMasuk").on('click',function(){
+        var masukRowData = $('#form').serializeArray();
+        var tanggal = document.getElementById('tanggaltambah').value;
+        var barang  = document.getElementById('barangtambah').value;
+        var status  = document.getElementById('statustambah').value;
+        var jumlah  = document.getElementById('jumlahtambah').value;
+        var catatan = document.getElementById('catatantambah').value;
 
-    var lastId = 0;
-    
-    // get post data
-    database.ref("posts").on('value', function(snapshot) {
-        var value = snapshot.val();
-        var htmls = [];
-        $.each(value, function(index, value){
-            if(value) {
-                htmls.push('<tr>\
-                    <td>'+ index +'</td>\
-                    <td>'+ value.title +'</td>\
-                    <td>'+ value.content +'</td>\
-                    <td><a data-bs-toggle="modal" data-bs-target="#update-modal" class="btn btn-success update-post" data-id="' + index + '">Update</a>\
-                    <a data-bs-toggle="modal" data-bs-target="#delete-modal" class="btn btn-danger delete-data" data-id="' + index + '">Delete</a></td>\
-                </tr>');
-            }       
-            lastId = index;
-        });
-        $('#table-list').html(htmls);
-    });
-
-    // add data
-    $('#add-submit').on('click', function() {
-        var formData = $('#add-post').serializeArray();
-        var createId = Number(lastId) + 1;
-
-        firebase.database().ref('posts/' + createId).set({
-            title: formData[0].value,
-            content: formData[1].value,
-        });
-
-        // Reassign lastID value
-        lastId = createId;
-        $("#add-post")[0].reset();
-        $("#add-modal").modal('hide');
-    });
-
-    // update modal
-    var updateID = 0;
-    $('body').on('click', '.update-post', function() {
-        updateID = $(this).attr('data-id');
-        firebase.database().ref('posts/' + updateID).on('value', function(snapshot) {
-            var values = snapshot.val();
-            $('#update-title').val(values.title);
-            $('#update-content').val(values.content);
-        });
-    });
-
-    // update post
-    $('#update-button').on('click', function() {
-        var values = $("#update-post").serializeArray();
-        var postData = {
-            title : values[0].value,
-            content : values[1].value,
-        };
-
-        var updatedPost = {};
-        updatedPost['/posts/' + updateID] = postData;
-
-        firebase.database().ref().update(updatedPost);
-
-        $("#update-modal").modal('hide');
-        $("#update-post")[0].reset();
-    });
-
-    // delete modal
-    $("body").on('click', '.delete-data', function() {
-        var id = $(this).attr('data-id');
-        $('#post-id').val(id);
-    });
-
-    // delete post
-    $('#delete-button').on('click', function() {
-        var id = $('#post-id').val();
-        firebase.database().ref('posts/' + id).remove();
-
-        $('#post-id').val('');
-        $("#delete-modal").modal('hide');
-    });
-</script>
+        // alert(masukRowData);
+        console.log(masukRowData);
+        return false
+    })
+</script> --}}
 <script>
     var tabelData;
 

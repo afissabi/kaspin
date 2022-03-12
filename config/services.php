@@ -30,15 +30,14 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'firebase' => [
-        'api_key' => 'AIzaSyCzODaLq-kyU-XtpTWnqgrq6wjFGC2F8f0',
-        'auth_domain' => 'tes-kaspin-4333c.firebaseapp.com',
-        'database_url' => 'tes-kaspin-4333c.firebaseio.com',
-        'project_id' => 'tes-kaspin-4333c',
-        'storage_bucket' => 'tes-kaspin-4333c.appspot.com',
-        'messaging_sender_id' => '233430302853',
-        'app_id' => '1:233430302853:web:bc3b1d0a536059c8d769ec',
-        'measurement_id' => 'G-HPWS2KM4RW',
-    ],
+    // 'firebase' => [
+    //     'apiKey' => env('FIREBASE_API_KEY'),
+    //     'authDomain' => env('FIREBASE_AUTH_DOMAIN'),
+    //     'projectId' => env('FIREBASE_PROJECT_ID'),
+    //     'storageBucket' => env('FIREBASE_STORAGE_BUCKET'),
+    //     'messagingSenderId' => env('FIREBASE_MESSAGIN_SENDER_ID'),
+    //     'appId' => env('FIREBASE_APP_ID'),
+    //     'measurementId' => env('FIREBASE_MEASURMENT_ID'),
+    // ],
 
 ];
